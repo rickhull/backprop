@@ -1,5 +1,9 @@
 module BackProp
   class Value
+    def self.wrap(other)
+      other.is_a?(Value) ? other : Value.new(other)
+    end
+
     attr_reader :value, :children, :op
     attr_accessor :label, :gradient, :backstep
 
@@ -34,6 +38,7 @@ module BackProp
     end
 
     def +(other)
+      other = Value.wrap(other)
       val = Value.new(@value + other.value, children: [self, other], op: :+)
       val.backstep = -> {
         self.gradient += val.gradient
@@ -43,6 +48,7 @@ module BackProp
     end
 
     def *(other)
+      other = Value.wrap(other)
       val = Value.new(@value * other.value, children: [self, other], op: :*)
       val.backstep = -> {
         self.gradient += val.gradient * other.value
@@ -52,7 +58,7 @@ module BackProp
     end
 
     def -(other)
-      self + (other * Value.new(-1))
+      self + (Value.wrap(other) * Value.new(-1))
     end
 
     def **(other)
@@ -65,7 +71,7 @@ module BackProp
     end
 
     def /(other)
-      self * (other ** -1)
+      self * (Value.wrap(other) ** -1)
     end
 
     def tanh
