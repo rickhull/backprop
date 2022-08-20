@@ -1,19 +1,10 @@
 module BackProp
-  def v(numeric, label: '')
-    Value.new(numeric.to_f, label: label)
-  end
-
-  def self.tanh(x)
-    e2x = Math.exp(2 * x).to_f
-    (e2x - 1) / (e2x + 1)
-  end
-
   class Value
     attr_reader :value, :children, :op
     attr_accessor :label, :gradient, :backstep
 
     def initialize(float, label: '', op: nil, children: [])
-      @value = float
+      @value = float.to_f
       @gradient = 0
       @children = children
       if @children.empty?
@@ -78,7 +69,7 @@ module BackProp
     end
 
     def tanh
-      val = Value.new(BackProp.tanh(@value), children: [self], op: :tanh)
+      val = Value.new(Math.tanh(@value), children: [self], op: :tanh)
       val.backstep = -> {
         self.gradient += val.gradient * (1 - val.value ** 2)
       }
@@ -103,5 +94,9 @@ module BackProp
       @children.each(&:backprop)
       self
     end
+  end
+
+  def v(*args)
+    Value.new(*args)
   end
 end
