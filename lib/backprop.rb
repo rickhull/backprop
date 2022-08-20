@@ -18,7 +18,7 @@ module BackProp
     end
 
     def display
-      @label.empty? ? @value.to_s : format("%s=%.3f", @label, @value)
+      @label.empty? ? ("%.3f" % @value) : format("%s=%.3f", @label, @value)
     end
 
     def to_s
