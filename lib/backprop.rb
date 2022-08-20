@@ -1,4 +1,8 @@
 module BackProp
+  def self.sigmoid(x)
+    1.0 / (1 + Math.exp(-1 * x))
+  end
+
   class Value
     def self.wrap(other)
       other.is_a?(Value) ? other : Value.new(other)
@@ -21,20 +25,20 @@ module BackProp
       @backstep = -> {}
     end
 
-    def display
+    def to_s
       @label.empty? ? ("%.3f" % @value) : format("%s=%.3f", @label, @value)
     end
 
-    def to_s
-      format("%s(value=%.3f gradient=%.3f",
+    def display
+      format("%s(%.3f gradient=%.3f",
              @label.empty? ? @op || 'Value' : @label, @value, @gradient) +
         (@op.nil? ? '' :
-           format(" %s(%s)", @op, @children.map(&:display).join(', '))) + ')'
+           format(" %s(%s)", @op, @children.join(', '))) + ')'
     end
 
     def inspect
-      @children.empty? ? self.to_s :
-        [self.to_s, @children.map(&:inspect).join("\n\t")].join("\n\t")
+      @children.empty? ? self.display :
+        [self.display, @children.map(&:inspect).join("\n\t")].join("\n\t")
     end
 
     def +(other)
@@ -72,6 +76,12 @@ module BackProp
 
     def /(other)
       self * (Value.wrap(other) ** -1)
+    end
+
+    def sigmoid
+      # 1 / (1 + Math.exp(-x))
+      # (1 + Math.exp(-1 * x)) ** -1
+      (Value.new(1) + (Value.new(-1) * self).exp) ** -1
     end
 
     def tanh
