@@ -51,6 +51,7 @@ module BackProp
       other = Value.wrap(other)
       val = Value.new(@value + other.value, children: [self, other], op: :+)
       val.backstep = -> {
+        # gradients accumulate to handle a value used multiple times
         self.gradient += val.gradient
         other.gradient += val.gradient
       }
@@ -67,6 +68,7 @@ module BackProp
       val
     end
 
+    # Mostly we are squaring(2) or dividing(-1)
     def **(other)
       raise("Value is not supported") if other.is_a? Value
       val = Value.new(@value ** other, children: [self], op: :**)
@@ -108,16 +110,17 @@ module BackProp
       val
     end
 
+    # 1 / 1 + e^-x
     def sigmoid
-      # 1 / (1 + Math.exp(-x))
-      # (1 + Math.exp(-1 * x)) ** -1
       (Value.new(1) + (Value.new(-1) * self).exp) ** -1
     end
 
+    # rectified linear unit; not susceptible to vanishing gradient like above
     def relu
-      val = Value.new(@value < 0 ? 0 : @value, children: [self], op: :ReLU)
+      neg = @value < 0
+      val = Value.new(neg ? 0 : @value, children: [self], op: :relu)
       val.backstep = -> {
-        self.gradient += val.gradient * (@value < 0 ? 0 : 1)
+        self.gradient += val.gradient * (neg ? 0 : 1)
       }
       val
     end
