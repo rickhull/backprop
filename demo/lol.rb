@@ -10,15 +10,16 @@ d = e + c; d.label = :d
 f = v(-2, label: :f)
 l = d * f; l.label = :L
 
+puts "Setup:"
 p l
+puts
 
-l.backward
 
-p l
-
-if false
+puts "Calculate gradient by hand:"
 
 l.gradient = 1.0
+
+# l = d * f; derivative dl/dd = f; dl/df = d
 f.gradient = d.value
 d.gradient = f.value
 
@@ -41,4 +42,15 @@ a.gradient = e.gradient * b.value
 b.gradient = e.gradient * a.value
 
 p l
-end
+puts
+
+puts "zero_grad"
+l.zero_grad!
+p l
+puts
+
+puts "Calculate gradient via backward:"
+
+l.backward!
+
+p l
