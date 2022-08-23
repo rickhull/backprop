@@ -50,16 +50,16 @@ module BackProp
     end
 
     def inspect
-      @weights.map { |wval|
-        format("% .3f|% .3f", wval.value, wval.gradient)
-      }.join("\t")
+      fmt = "% .3f|% .3f"
+      @weights.map { |w| format(fmt, w.value, w.gradient) }.join("\t") +
+        "\t" + format(fmt, @bias.value, @bias.gradient)
     end
   end
 
   class Layer
     attr_reader :neurons
 
-    def initialize(input_count, output_count, activation: :tanh)
+    def initialize(input_count, output_count, activation: :relu)
       @neurons = Array.new(output_count) {
         Neuron.new(input_count, activation: activation)
       }
@@ -86,7 +86,7 @@ module BackProp
     attr_reader :layers
 
     # MLP.new(3, [4, 4, 1])
-    def initialize(input_count, output_counts, activation: :tanh)
+    def initialize(input_count, output_counts, activation: :relu)
       flat = [input_count, *output_counts]
       @layers = output_counts.map.with_index { |oc, i|
         Layer.new(flat[i], flat[i+1], activation: activation)
