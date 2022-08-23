@@ -8,8 +8,8 @@ module BackProp
       other.is_a?(Value) ? other : Value.new(other)
     end
 
-    attr_reader :value, :children, :op
-    attr_accessor :label, :gradient, :backstep
+    attr_reader :children
+    attr_accessor :value, :label, :gradient, :backstep, :op
 
     def initialize(float, label: '', op: nil, children: [])
       @value = float.to_f
