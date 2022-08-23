@@ -2,12 +2,12 @@ require 'backprop'
 
 include BackProp
 
-a = v(2, label: :a)
-b = v(-3, label: :b)
-c = v(10, label: :c)
+a = Value.new(2, label: :a)
+b = Value.new(-3, label: :b)
+c = Value.new(10, label: :c)
 e = a * b; e.label = :e
 d = e + c; d.label = :d
-f = v(-2, label: :f)
+f = Value.new(-2, label: :f)
 l = d * f; l.label = :L
 
 puts "Setup:"

@@ -1,8 +1,4 @@
 module BackProp
-  def self.sigmoid(x)
-    1.0 / (1 + Math.exp(-1 * x))
-  end
-
   class Value
     def self.wrap(other)
       other.is_a?(Value) ? other : Value.new(other)
@@ -112,7 +108,7 @@ module BackProp
 
     # 1 / 1 + e^-x
     def sigmoid
-      (Value.new(1) + (Value.new(-1) * self).exp) ** -1
+      ((self * -1).exp + 1) ** -1
     end
 
     # rectified linear unit; not susceptible to vanishing gradient like above
@@ -146,9 +142,5 @@ module BackProp
       @children.each(&:backprop)
       self
     end
-  end
-
-  def v(*args)
-    Value.new(*args)
   end
 end
