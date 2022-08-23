@@ -98,6 +98,13 @@ module BackProp
       x.size == 1 ? x.first : x
     end
 
+    def descend(step_size)
+      self.parameters.each { |value|
+        value.value += -1 * step_size * value.gradient
+      }
+      self
+    end
+
     def parameters
       @layers.map { |l| l.parameters }.flatten
     end
