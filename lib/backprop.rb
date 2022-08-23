@@ -127,8 +127,15 @@ module BackProp
     #
 
     def backward
+      self.reset_gradient
       @gradient = 1.0
       self.backprop
+    end
+
+    def reset_gradient
+      @gradient = 0.0
+      @children.each(&:reset_gradient)
+      self
     end
 
     def backprop
