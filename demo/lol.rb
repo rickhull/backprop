@@ -44,13 +44,13 @@ b.gradient = e.gradient * a.value
 p l
 puts
 
-puts "zero_grad"
-l.zero_grad!
+puts "Reset gradients"
+l.reset_gradient
 p l
 puts
 
 puts "Calculate gradient via backward:"
 
-l.backward!
+l.backward
 
 p l

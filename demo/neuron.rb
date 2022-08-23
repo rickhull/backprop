@@ -3,15 +3,15 @@ require 'backprop'
 include BackProp
 
 # inputs x1, x2
-x1 = v 2, label: :x1
-x2 = v 0, label: :x2
+x1 = Value.new(2, label: :x1)
+x2 = Value.new(0, label: :x2)
 
 # weights w1, w2
-w1 = v -3, label: :w1
-w2 = v 1, label: :w2
+w1 = Value.new(-3, label: :w1)
+w2 = Value.new(1, label: :w2)
 
 # neuron bias
-b = v 6.8813735870195432, label: :b
+b = Value.new(6.8813735870195432, label: :b)
 
 xw1 = x1*w1; xw1.label = :xw1
 xw2 = x2*w2; xw2.label = :xw2
@@ -20,12 +20,6 @@ sum = xw1 + xw2; sum.label = :sum
 n = sum + b; n.label = :n
 
 o = n.tanh; o.label = :o
-
-# now try backprop
-
-o.backward
-p o
-puts
 
 puts "Calculate gradient by hand:"
 o.gradient = 1
@@ -56,7 +50,7 @@ w2.gradient = xw2.gradient * x2.value
 p o
 puts
 
-puts "Zero grad"
+puts "Reset gradient:"
 o.reset_gradient
 p o
 puts
