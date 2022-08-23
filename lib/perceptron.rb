@@ -27,7 +27,7 @@ module BackProp
 
     attr_reader :weights, :bias, :activation
 
-    def initialize(input_count, activation: :tanh)
+    def initialize(input_count, activation: :relu)
       @weights = Array.new(input_count) { Value.new(rand(-1.0..1.0)) }
       @bias = Value.new(rand(-1.0..1.0))
       @activation = ACTIVATION.fetch(activation)
