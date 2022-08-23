@@ -24,12 +24,10 @@ o = n.tanh; o.label = :o
 # now try backprop
 
 o.backward
-
 p o
+puts
 
-
-
-if false
+puts "Calculate gradient by hand:"
 o.gradient = 1
 
 # do/dn
@@ -56,4 +54,14 @@ x2.gradient = xw2.gradient * w2.value
 w2.gradient = xw2.gradient * x2.value
 
 p o
-end
+puts
+
+puts "Zero grad"
+o.reset_gradient
+p o
+puts
+
+puts "Calculate gradient via backprop:"
+o.backward
+p o
+puts
