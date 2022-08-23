@@ -6,13 +6,16 @@ It has been further simplified and some liberties have been taken with naming.
 
 # Rationale
 
-This can be used to train neural nets.
-Typically the NN intends to minimize a loss function.
+This can be used to train neural nets, typically to minimize a loss function.
 An efficient way to do this is via gradient descent.
 Mathematical derivatives and the chain rule from calculus are used to determine
   inputs with the greatest influence on the output.
 The inputs are manipulated to minimize the output, represented as the loss
   function.
+That is, the output of the neural net is a prediction.
+The error or loss (prediction compared to the ideal, or known output) is
+  computed for a variety of cases, and the network weights are adjusted to
+  better match the desired output.
 The smallest loss implies the best performance at a given objective.
 
 # Examples
@@ -80,8 +83,17 @@ include BackProp
 # create a new neuron with 3 inputs; initial weights and bias are random
 n = Neuron.new(3)
 
+puts n
+#=> N(-0.098, 1.000, 0.064) (0.468 relu)
+
+p n
+#=> -0.098| 0.000         1.000| 0.000    0.064| 0.000    0.468| 0.000
+
 # send 0 to each input
 output = n.apply(0)
+
+puts output
+#=> 0.468
 
 # output is positive due to rectified linear unit (ReLU) activation function
 output.value >= 0 #=> true
@@ -107,14 +119,25 @@ include BackProp
 # create a new layer of 4 neurons with 3 inputs
 l = Layer.new(3, 4)
 
+puts l
+```
+
+```
+N(0.957, 0.650, 0.995)  (-0.530 relu)
+N(-0.482, 0.272, -0.467)        (0.905 relu)
+N(-0.083, -0.519, -0.921)       (-0.811 relu)
+N(-0.369, -0.688, -0.097)       (0.122 relu)
+```
+
+```ruby
 # send 0 to each input
 output = l.apply(0)
 
 # returns an array of outputs, one for each neuron
 output.size == 4 #=> true
 
-# check the raw values
-output.map(&:value) #=> [...]
+puts output.map(&:value).join(', ')
+#=> 0.0, 0.90522363833711, 0.0, 0.12226124806686789
 ```
 
 ## Multiple Layer Perceptron (MLP)
@@ -134,6 +157,24 @@ include BackProp
 # create a network with 3 inputs, 2 layers of 4 neurons, and one output neuron
 n = MLP.new(3, [4, 4, 1])
 
+puts n
+```
+
+```
+N(0.660, 0.250, -0.387) (-0.677 relu)
+N(0.931, 0.202, 0.596)  (0.861 relu)
+N(0.101, 0.611, 0.885)  (-0.295 relu)
+N(-0.858, 0.136, 0.091) (-0.309 relu)
+
+N(-0.594, 0.178, 0.484, -0.208) (0.515 relu)
+N(-0.295, -0.899, 0.437, -0.812)        (-0.200 relu)
+N(-0.478, 0.230, -0.971, 0.897) (-0.858 relu)
+N(0.636, 0.719, -0.857, -0.546) (-0.338 relu)
+
+N(0.962, 0.529, 0.475, -0.837)  (-0.362 relu)
+```
+
+```ruby
 # the first layer has 4 neurons, 3 inputs
 n.layers[0].neurons.size == 4 #=> true
 n.layers[0].neurons[0].weights.size == 3 #=> true
@@ -152,4 +193,22 @@ output = n.apply(0)
 # returns an output value corresponding to the output neuron
 # output is positive to due to ReLU
 output.value >= 0 #=> true
+
+puts output
+#=> 0.045
 ```
+
+## Gradient Descent
+
+Loop:
+
+1. Backward propagate the gradients
+   (derivatives for each value with respect to the output value)
+2. Adjust all weights slightly, according to their gradients.
+3. Run the network forward to generate a new output.
+   The loss should be smaller.
+   The new output should be closer to the desired output.
+
+## Further Reading
+
+* [demo/loss.rb](demo/loss.rb)
