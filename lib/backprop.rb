@@ -41,6 +41,12 @@ module BackProp
         [self.display, @children.map(&:inspect).join("\n\t")].join("\n\t")
     end
 
+    #
+    # Primary operations; notice every Value.new(op:) also defines a backstep
+    #   The backstep closes over the environment of the method so it can
+    #   refer to values present when the method executes
+    #
+
     def +(other)
       other = Value.wrap(other)
       val = Value.new(@value + other.value, children: [self, other], op: :+)
@@ -61,33 +67,11 @@ module BackProp
       val
     end
 
-    def -(other)
-      self + (Value.wrap(other) * Value.new(-1))
-    end
-
     def **(other)
       raise("Value is not supported") if other.is_a? Value
       val = Value.new(@value ** other, children: [self], op: :**)
       val.backstep = -> {
         self.gradient += val.gradient * (other * self.value ** (other - 1))
-      }
-      val
-    end
-
-    def /(other)
-      self * (Value.wrap(other) ** -1)
-    end
-
-    def sigmoid
-      # 1 / (1 + Math.exp(-x))
-      # (1 + Math.exp(-1 * x)) ** -1
-      (Value.new(1) + (Value.new(-1) * self).exp) ** -1
-    end
-
-    def tanh
-      val = Value.new(Math.tanh(@value), children: [self], op: :tanh)
-      val.backstep = -> {
-        self.gradient += val.gradient * (1 - val.value ** 2)
       }
       val
     end
@@ -99,6 +83,48 @@ module BackProp
       }
       val
     end
+
+    #
+    # Secondary operations defined in terms of primary
+    #
+
+    def -(other)
+      self + (Value.wrap(other) * Value.new(-1))
+    end
+
+    def /(other)
+      self * (Value.wrap(other) ** -1)
+    end
+
+    #
+    # Activation functions
+    #
+
+    def tanh
+      val = Value.new(Math.tanh(@value), children: [self], op: :tanh)
+      val.backstep = -> {
+        self.gradient += val.gradient * (1 - val.value ** 2)
+      }
+      val
+    end
+
+    def sigmoid
+      # 1 / (1 + Math.exp(-x))
+      # (1 + Math.exp(-1 * x)) ** -1
+      (Value.new(1) + (Value.new(-1) * self).exp) ** -1
+    end
+
+    def relu
+      val = Value.new(@value < 0 ? 0 : @value, children: [self], op: :ReLU)
+      val.backstep = -> {
+        self.gradient += val.gradient * (@value < 0 ? 0 : 1)
+      }
+      val
+    end
+
+    #
+    # Backward propagation
+    #
 
     def backward
       @gradient = 1.0
