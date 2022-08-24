@@ -55,7 +55,7 @@ gets
   end
 
   # 4. adjust all weights and biases towards minimizing loss function
-  loss.descend_recursive(gradient_step)
+  n.descend(gradient_step)
 }
 
 p outputs.map(&:value)

@@ -79,8 +79,11 @@ module BackProp
 
     def apply(x = 0)
       @layers.each { |layer| x = layer.apply(x) }
-      # x.size == 1 ? x.first : x
       x
+    end
+
+    def descend(step_size)
+      self.parameters.each { |p| p.descend(step_size) }
     end
 
     def parameters
