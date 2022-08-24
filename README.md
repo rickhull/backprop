@@ -140,7 +140,7 @@ puts output.map(&:value).join(', ')
 #=> 0.0, 0.90522363833711, 0.0, 0.12226124806686789
 ```
 
-## Multiple Layer Perceptron (MLP)
+## Multilayer Perceptron (MLP)
 
 First, define a number of inputs.  Say 5 inputs, like temperature, etc.
 Often we want a single output, which is the simple case.
