@@ -14,10 +14,17 @@ outputs = BackProp.rand_outputs(num_examples, 2)
 predictions = []
 
 n = MLP.new(num_inputs, net_structure)
+
+
+puts "Training Cases:"
 inputs.each.with_index { |input, i|
   puts format("%s = %s", input.join(', '), outputs[i].value.inspect)
 }
+puts
+
+puts "Neural Net:"
 puts n
+puts
 
 puts "Press Enter to continue"
 gets
