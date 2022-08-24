@@ -1,22 +1,6 @@
 require 'backprop'
 
 module BackProp
-  def self.mean_squared_error(a1, a2)
-    a1.map.with_index { |a, i|
-      (a - a2[i]) ** 2
-    }.inject(Value.new(0)) { |memo, val| memo + val } / a1.size
-  end
-
-  def self.rand_inputs(num_inputs, num_examples, rand_arg)
-    Array.new(num_examples) {
-      Array.new(num_inputs) { Value.new rand(rand_arg) }
-    }
-  end
-
-  def self.rand_outputs(num_examples, rand_arg)
-    Array.new(num_examples) { Value.new rand(rand_arg) }
-  end
-
   class Neuron
     # available activation functions for Value objects
     ACTIVATION = {
@@ -115,5 +99,21 @@ module BackProp
     def inspect
       @layers.map(&:inspect).join("\n\n")
     end
+  end
+
+  def self.mean_squared_error(a1, a2)
+    a1.map.with_index { |a, i|
+      (a - a2[i]) ** 2
+    }.inject(Value.new(0)) { |memo, val| memo + val } / a1.size
+  end
+
+  def self.rand_inputs(num_inputs, num_examples, rand_arg)
+    Array.new(num_examples) {
+      Array.new(num_inputs) { Value.new rand(rand_arg) }
+    }
+  end
+
+  def self.rand_outputs(num_examples, rand_arg)
+    Array.new(num_examples) { Value.new rand(rand_arg) }
   end
 end
