@@ -25,6 +25,11 @@ module BackProp
       sum.send(@activation)
     end
 
+    def descend(step_size)
+      self.parameters.each { |p| p.descend(step_size) }
+      self
+    end
+
     def parameters
       @weights + [@bias]
     end
@@ -51,6 +56,11 @@ module BackProp
 
     def apply(x = 0)
       @neurons.map { |n| n.apply(x) }
+    end
+
+    def descend(step_size)
+      @neurons.each { |n| n.descend(step_size) }
+      self
     end
 
     def parameters
@@ -83,7 +93,8 @@ module BackProp
     end
 
     def descend(step_size)
-      self.parameters.each { |p| p.descend(step_size) }
+      @layers.each { |l| l.descend(step_size) }
+      self
     end
 
     def parameters
