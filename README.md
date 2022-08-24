@@ -1,10 +1,14 @@
 [![Tests](https://github.com/rickhull/backprop/actions/workflows/test.yaml/badge.svg)](https://github.com/rickhull/backprop/actions/workflows/test.yaml)
 
-# Backward Propagation
+# Simple Neural Networks
+
+## With Backward Propagation And Gradient Descent
 
 This is a reimplementation of Andrej Karpathy's
 [micrograd](https://github.com/karpathy/micrograd) in Ruby.
 It has been further simplified and some liberties have been taken with naming.
+Recursion is used by default for backward propagation and gradient descent.
+There is support for operating on flat lists of parameters as well.
 
 # Rationale
 
