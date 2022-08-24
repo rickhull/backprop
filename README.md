@@ -202,12 +202,12 @@ puts output
 
 Loop:
 
-1. Backward propagate the gradients
+1. Run the network forward to generate a new output.
+2. Determine the loss; it should be smaller over time
+3. Backward propagate the gradients
    (derivatives for each value with respect to the output value)
-2. Adjust all weights slightly, according to their gradients.
-3. Run the network forward to generate a new output.
-   The loss should be smaller.
-   The new output should be closer to the desired output.
+4. Adjust all weights slightly, according to their gradients.
+
 
 ## Further Reading
 
