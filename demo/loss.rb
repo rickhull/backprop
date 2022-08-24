@@ -3,18 +3,18 @@ require 'perceptron'
 include BackProp
 
 num_inputs = 3
-num_examples = 9
+num_examples = 6
 net_structure = [4, 4, 1]
 gradient_step = 0.1
 iterations = 999
+afn = [:tanh, :sigmoid, :relu].sample
 
 # binary classifier; 9 sets of inputs that map to 1 or 0
 inputs = BackProp.rand_inputs(num_inputs, num_examples, (-1.0..1.0))
 outputs = BackProp.rand_outputs(num_examples, 2)
 predictions = []
 
-n = MLP.new(num_inputs, net_structure)
-
+n = MLP.new(num_inputs, net_structure, activation: afn)
 
 puts "Training Cases:"
 inputs.each.with_index { |input, i|
@@ -47,6 +47,7 @@ gets
 
   # output every so often
   if i % 100 == 0
+    p outputs.map(&:value)
     p predictions.map(&:value)
     p n
     puts
@@ -57,5 +58,7 @@ gets
   n.descend(gradient_step)
 }
 
+p outputs.map(&:value)
 p predictions.map(&:value)
+puts n
 p n
