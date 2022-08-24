@@ -41,8 +41,11 @@ module BackProp
       sum.send(@activation)
     end
 
-    def parameters
-      @weights + [@bias]
+    def descend(step_size)
+      (@weights + [@bias]).each { |p|
+        p.value += (-1 * step_size * p.gradient)
+      }
+      self
     end
 
     def to_s
@@ -69,8 +72,9 @@ module BackProp
       @neurons.map { |n| n.apply(x) }
     end
 
-    def parameters
-      @neurons.map { |n| n.parameters }.flatten
+    def descend(step_size)
+      @neurons.each { |n| n.descend(step_size) }
+      self
     end
 
     def to_s
@@ -99,14 +103,8 @@ module BackProp
     end
 
     def descend(step_size)
-      self.parameters.each { |value|
-        value.value += -1 * step_size * value.gradient
-      }
+      @layers.each { |l| l.descend(step_size) }
       self
-    end
-
-    def parameters
-      @layers.map { |l| l.parameters }.flatten
     end
 
     def to_s
