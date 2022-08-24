@@ -36,7 +36,7 @@ gets
   # 4. adjust every neuron in the direction of minimizing loss
 
   # 1. apply inputs
-  predictions = inputs.map { |input| n.apply(input) }
+  predictions = inputs.map { |input| n.apply(input).first }
 
   # 2. calculate loss
   loss = BackProp.mean_squared_error(outputs, predictions)
@@ -49,8 +49,8 @@ gets
   if i % 100 == 0
     p outputs.map(&:value)
     p predictions.map(&:value)
-    p n
     puts
+    p n
     gets
   end
 
