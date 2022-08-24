@@ -46,8 +46,17 @@ module BackProp
     def +(other)
       other = Value.wrap(other)
       val = Value.new(@value + other.value, children: [self, other], op: :+)
+
+      # What we're about to do here is pretty twisted.  We're going to refer
+      # to this execution context in the definition of a lambda, but we'll
+      # evaluate it later.
+      # Backstep is a lambda attached to val, which will be the return value
+      # here. When val.backstep is called later, it will update the gradients
+      # on both self and other.
       val.backstep = -> {
-        # gradients accumulate to handle a value used multiple times
+        # gradients accumulate for handling a term used more than once
+        # chain rule says to multiply val's gradient and the op's derivative
+        # derivative of addition is 1.0; pass val's gradient to children
         self.gradient += val.gradient
         other.gradient += val.gradient
       }
@@ -58,6 +67,7 @@ module BackProp
       other = Value.wrap(other)
       val = Value.new(@value * other.value, children: [self, other], op: :*)
       val.backstep = -> {
+        # derivative of multiplication is the opposite term
         self.gradient += val.gradient * other.value
         other.gradient += val.gradient * self.value
       }
@@ -65,15 +75,19 @@ module BackProp
     end
 
     # Mostly we are squaring(2) or dividing(-1)
+    # We don't support expressions, so Value is not supported for other
+    # This will look like a unary op in the tree
     def **(other)
       raise("Value is not supported") if other.is_a? Value
       val = Value.new(@value ** other, children: [self], op: :**)
       val.backstep = -> {
+        # accumulate, chain rule, derivative; as before
         self.gradient += val.gradient * (other * self.value ** (other - 1))
       }
       val
     end
 
+    # e^x - unary operation
     def exp
       val = Value.new(Math.exp(@value), children: [self], op: :exp)
       val.backstep = -> {
@@ -84,6 +98,7 @@ module BackProp
 
     #
     # Secondary operations defined in terms of primary
+    # These return differentiable Values but with more steps
     #
 
     def -(other)
@@ -96,6 +111,7 @@ module BackProp
 
     #
     # Activation functions
+    # Unary operations
     #
 
     def tanh
@@ -125,18 +141,23 @@ module BackProp
     # Backward propagation
     #
 
+    # Generally, this is called on the final output, say of a loss function
+    # It will initialize the gradients and then update the gradients on
+    # all dependent Values via back propagation
     def backward
-      self.reset_gradient
-      @gradient = 1.0
-      self.backprop
+      self.reset_gradient # set gradient to zero on all descendants
+      @gradient = 1.0     # this node's gradient is 1.0
+      self.backprop       # call backstep on all descendants
     end
 
+    # recursive call; visits all descendants; sets gradient to zero
     def reset_gradient
       @gradient = 0.0
       @children.each(&:reset_gradient)
       self
     end
 
+    # recursive call; visits all descendants; updates gradients via backstep
     def backprop
       self.backstep.call
       @children.each(&:backprop)
