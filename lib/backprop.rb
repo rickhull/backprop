@@ -163,5 +163,15 @@ module BackProp
       @children.each(&:backprop)
       self
     end
+
+    def descend(step_size = 0.1)
+      @value += -1 * step_size * @gradient
+    end
+
+    def descend_recursive(step_size = 0.1)
+      self.descend(step_size)
+      @children.each { |c| c.descend_recursive(step_size) }
+      self
+    end
   end
 end
