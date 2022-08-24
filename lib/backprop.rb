@@ -166,6 +166,7 @@ module BackProp
 
     def descend(step_size = 0.1)
       @value += -1 * step_size * @gradient
+      self
     end
 
     def descend_recursive(step_size = 0.1)
