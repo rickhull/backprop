@@ -1,3 +1,5 @@
+[![Tests](https://github.com/rickhull/backprop/actions/workflows/test.yaml/badge.svg)](https://github.com/rickhull/backprop/actions/workflows/test.yaml)
+
 # Backward Propagation
 
 This is a reimplementation of Andrej Karpathy's
