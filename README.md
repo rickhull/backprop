@@ -204,16 +204,84 @@ puts output
 #=> 0.045
 ```
 
+## Performance Evaluation
+
+So, our neural net, given some inputs, has yielded an output.  Is it any good?
+We need to compare it to a known-good outcome.
+We must already have a set of examples where certain inputs correspond to
+desired outputs.
+Maybe an input signal like `101` is expected to output `1`.  `010` should also yield `1`, but `001` yields `0` (obviously!).
+Whatever the desired mapping of inputs to outputs is, the neural net can learn
+to provide it, in a very black box sort of manner.
+
+At first, the neural net has random weights, so for `101` it will initially
+output something like `0.173`.
+And maybe for `010`: `0.865`.  Error is present and quantifiable.
+We'll call the error (the difference between the net's output and desired
+output) the *loss*, and our job is now to minimize the loss.
+There are many ways to quanitify the loss, and the way we choose to quantify
+the loss is our so-called *loss function*.
+
+## Loss Function
+
+Typically we have dozens, hundreds, thousands, etc. of training examples or
+cases, which map a set of inputs to a desired output.
+We'll feed each case's inputs to the neural net and get a prediction.
+The difference between prediction and desired output is the error.
+The loss function sums the errors to yield a single loss score or number.
+
+A common loss function is *mean squared error*.
+That is, for every error (one for every case) positive or negative, square it,
+and take the mean of all the squares (sum and divide by the number of cases).
+
+## Forward Calculation
+
+For every case with a known desired output, feed the input to the MLP
+(multilayer perceptron, aka neural net) to yield a prediction.
+The prediction is merely the evaluation of a gigantic arithmetic expression,
+which we have captured by representing all relevant terms as Values,
+particularly the weights and bias of each Neuron.  For each prediction, with
+a known desired output, calculate the error, and collect all the errors into
+the output of the loss function, say *mean squared error*, to represent
+our ultimate outcome for this iteration of the MLP: the **loss**.
+
+## Backward Propagation
+
+We will call `loss.backward` to calculate the derivative for every descendent
+term in the final, gigantic loss expression, with respect to the loss itself.
+This derivative will be called the gradient and is attached to every term by
+nature of its representation as a Value object.
+A larger gradient means a term has a larger effect on the output prediction.
+The sign of the gradient informs which direction the output will change as
+a parameter value changes.
+
 ## Gradient Descent
+
+For every case, we've run the network forward to generate a *prediction*,
+yielding an *error* (relative to the desired output).
+Our *loss function* collects the errors into single *loss* number which
+represents the ultimate outcome for all cases and this iteration of the MLP.
+
+Now, we will morph the MLP by adjusting the weights and bias for every neuron,
+via the process of *gradient descent*.
+Simply adjust every value by a small step (e.g. 0.05) multiplied by the
+value's gradient.
+In keeping with "descent" and "minimization", if the gradient is positive,
+the value goes down; negative gradients imply the value should increase.
+
+Now we have a new MLP with all neuron weights and biases slightly different
+than before.  Its predictions should be slightly better and yield slightly
+smaller loss.
+
+## Forward and Backward
 
 Loop:
 
 1. Run the network forward to generate a new output.
 2. Determine the loss; it should be smaller over time
 3. Backward propagate the gradients
-   (derivatives for each value with respect to the output value)
+   (derivatives for each term (Value) with respect to the loss)
 4. Adjust all weights slightly, according to their gradients.
-
 
 ## Further Reading
 
