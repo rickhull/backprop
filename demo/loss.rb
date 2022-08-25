@@ -3,7 +3,7 @@ require 'perceptron'
 include BackProp
 
 num_inputs = 3
-num_examples = 6
+num_examples = 9
 net_structure = [4, 4, 1]
 gradient_step = 0.1
 iterations = 999
