@@ -24,7 +24,7 @@ The error or loss (prediction compared to the ideal, or known output) is
   better match the desired output.
 The smallest loss implies the best performance at a given objective.
 
-# Examples
+# Fundamentals
 
 ## Value
 
