@@ -1,4 +1,4 @@
-require 'perceptron'
+require 'backprop/perceptron'
 
 include BackProp
 
@@ -48,7 +48,7 @@ gets
   # output every so often
   if i % 100 == 0
     p outputs.map(&:value)
-    p predictions.map(&:value)
+    p predictions.map { |f| f.value.round(3) }
     puts
     p n
     gets
@@ -59,6 +59,6 @@ gets
 }
 
 p outputs.map(&:value)
-p predictions.map(&:value)
+p predictions.map { |f| f.value.round(3) }
 puts n
 p n

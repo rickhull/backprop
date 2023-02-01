@@ -1,4 +1,4 @@
-require 'backprop'
+require 'backprop/value'
 
 module BackProp
   class Neuron
