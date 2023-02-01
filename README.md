@@ -26,6 +26,12 @@ The smallest loss implies the best performance at a given objective.
 
 # Examples
 
+## Value
+
+A `Value` is a wrapper around a numeric quantity, typically a float.
+This allows us to build mathematical expressions as well as the gradient
+  for each Value relative to the larger expression (i.e. the derivative).
+
 ```ruby
 require 'backprop'
 
@@ -39,6 +45,10 @@ force = mass * acc
 force.label = 'force'
 p force
 ```
+
+Because `mass` and `acc` are Values, and we assign the product of these two
+  to `force`, now `force` is a Value with an operator `*` and children `mass`
+  and `acc`:
 
 ```
 force(value=250 gradient=0 *(mass=25, acc=10))
