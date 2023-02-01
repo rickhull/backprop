@@ -80,6 +80,11 @@ By wrapping our numbers in the Value class, whenever we calculate a result,
 
 # Neural Networks
 
+We will build up an understanding of neural networks one layer at a time.
+They will ultimately be composed of many Values that can be thought of as
+  a giant arithmetic expression, and we will use the gradients to perform
+  gradient descent in order to minimize a loss function.
+
 ## Neuron
 
 A neuron has a number of inputs which it combines to yield a single output.
