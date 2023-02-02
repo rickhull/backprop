@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require 'backprop/value'
+require 'backprop'
 
 include BackProp
 
