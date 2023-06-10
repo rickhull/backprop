@@ -1,4 +1,4 @@
-require 'backprop/value'
+require 'backprop'
 
 include BackProp
 
