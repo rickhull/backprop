@@ -147,7 +147,7 @@ module BackProp
       val
     end
 
-    # 1 / 1 + e^-x
+    # 1 / (1 + e^-x)
     def sigmoid
       ((self * -1).exp + 1) ** -1
     end
